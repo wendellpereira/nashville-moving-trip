@@ -1,5 +1,5 @@
-const CACHE = 'southbound-v3';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './hotels-confirmation/Candlewood-confirmation-public.pdf'];
+const CACHE = 'southbound-v4';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './hotels-confirmation/Hilton-Reservation-Confirmation-public.pdf', './hotels-confirmation/Candlewood-confirmation-public.pdf'];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', event => {
