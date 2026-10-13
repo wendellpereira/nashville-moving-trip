@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173f35">
+  <meta name="description" content="Offline trip guide for Wendell's Minneapolis-to-Nashville move.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <title>Southbound — Minneapolis to Nashville</title>
+  <style>
+    :root{--ink:#18312a;--muted:#526b63;--paper:#fbf7ea;--sheet:#fffdf6;--green:#173f35;--lime:#d6e65d;--orange:#a64725;--line:#cad2bd;--focus:#1769aa;--radius:14px;--shadow:0 8px 24px rgba(24,49,42,.12)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--green)}
+    body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased}
+    ::selection{background:var(--lime);color:var(--green)}
+    a{color:inherit;text-underline-offset:.2em}
+    button,input{font:inherit}
+    :focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+    .top{background:var(--green);color:#f9f4df;padding:max(22px,env(safe-area-inset-top)) 18px 28px;position:relative;overflow:hidden}
+    .top:after{content:"";position:absolute;right:-45px;top:25px;width:160px;height:160px;border:28px solid rgba(214,230,93,.12);border-radius:50%}
+    .top-inner,.wrap{max-width:920px;margin:auto}
+    h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.35rem,11vw,5.4rem);font-weight:700;letter-spacing:-.03em;line-height:.88;margin:34px 0 16px;max-width:760px;text-wrap:balance}
+    .summary{font-size:1.05rem;max-width:610px;color:#dae5d4;margin:0 0 24px}
+    .tripline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-weight:800;font-size:.84rem;color:#dae5d4;margin-bottom:16px}
+    .tripline span{color:var(--lime)}
+    .tripline i{width:18px;border-top:2px solid #8ba89d}
+    .wrap{padding:24px 16px 100px}
+    .offline{display:flex;align-items:flex-start;gap:12px;background:#ecf1d1;padding:14px 16px;border-radius:var(--radius);margin-bottom:28px}
+    .offline svg{flex:0 0 auto;margin-top:2px}.offline strong{display:block}.offline small{color:var(--muted)}
+    h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.7rem,7vw,2.7rem);letter-spacing:-.02em;line-height:1.05;margin:48px 0 8px}
+    .section-note{color:var(--muted);margin:0 0 20px;max-width:65ch}
+    .route{position:relative;margin-top:26px}
+    .route:before{content:"";position:absolute;left:25px;top:26px;bottom:26px;border-left:3px dashed #8e9d74}
+    .day{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;position:relative;margin-bottom:24px}
+    .marker{width:52px;height:52px;border-radius:50%;background:var(--orange);color:white;display:grid;place-items:center;font-weight:900;font-size:1.2rem;z-index:1;box-shadow:0 0 0 6px var(--paper)}
+    .day:nth-child(2) .marker{background:#ae4e2b}.day:nth-child(3) .marker{background:var(--green)}
+    .day-card{min-width:0;background:var(--sheet);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .day-main{min-width:0;padding:20px}
+    .day-label{font-weight:900;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;font-size:.75rem;margin:0 0 8px}
+    .day h3{font-family:Georgia,"Times New Roman",serif;font-size:1.55rem;line-height:1.1;letter-spacing:-.02em;margin:0 0 10px}
+    .measure{font-variant-numeric:tabular-nums;font-weight:800;color:var(--green);margin:0 0 15px}
+    address{font-style:normal;color:var(--muted);margin:0;overflow-wrap:anywhere}
+    .actions{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+    .actions a{display:flex;align-items:center;justify-content:center;gap:8px;min-height:54px;text-decoration:none;font-weight:850;color:var(--green)}
+    .actions a+a{border-left:1px solid var(--line)}
+    .actions svg{width:19px;height:19px}
+    .note{margin-top:13px;padding-top:13px;border-top:1px dashed var(--line);font-size:.92rem;color:var(--muted)}
+    .tow{background:var(--green);color:#f8f5e8;padding:22px;border-radius:var(--radius);margin:36px 0}
+    .tow h2{margin:0 0 10px;color:var(--lime)}.tow p{margin:0;color:#d8e1d7}
+    .tow strong{color:#fff}
+    .grid{display:grid;gap:16px}
+    .panel{background:var(--sheet);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)}
+    .panel h3{font-family:Georgia,"Times New Roman",serif;font-size:1.35rem;margin:0 0 14px}
+    .checklist{list-style:none;margin:0;padding:0}
+    .checklist li+li{border-top:1px solid var(--line)}
+    .checklist label{display:flex;align-items:flex-start;gap:12px;padding:13px 0;cursor:pointer}
+    .checklist input{appearance:none;width:23px;height:23px;border:2px solid #6f8078;border-radius:5px;flex:0 0 auto;margin:0;background:#fff;display:grid;place-items:center}
+    .checklist input:checked{background:var(--green);border-color:var(--green)}
+    .checklist input:checked:after{content:"";width:10px;height:6px;border:solid white;border-width:0 0 3px 3px;transform:rotate(-45deg) translate(1px,-1px)}
+    .checklist input:checked+span{text-decoration:line-through;color:#75837e}
+    .danger{background:#f5ded2;box-shadow:none}
+    .danger p{margin:.5rem 0;color:#64331f}
+    .call{display:inline-flex;min-height:48px;align-items:center;background:var(--orange);color:white;border-radius:999px;padding:0 18px;text-decoration:none;font-weight:900;margin-top:8px}
+    .fields{display:grid;gap:12px;margin-top:16px}
+    .fields label{font-weight:800;font-size:.84rem;color:var(--muted)}
+    .fields input{display:block;width:100%;margin-top:5px;min-height:48px;border:1px solid #9caa9e;border-radius:9px;padding:10px 12px;background:#fff;color:var(--ink)}
+    .saved{font-size:.8rem;color:var(--muted);min-height:1.2em;margin:8px 0 0}
+    .install{border-top:1px solid var(--line);margin-top:22px;padding-top:18px;font-size:.92rem;color:var(--muted)}
+    footer{background:#102f27;color:#d5dfd6;padding:26px 18px calc(26px + env(safe-area-inset-bottom));font-size:.85rem;text-align:center}
+    .jump{position:fixed;z-index:5;bottom:calc(14px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;background:#fff;border-radius:999px;box-shadow:0 7px 28px rgba(10,30,24,.25);padding:5px}
+    .jump a{text-decoration:none;padding:9px 13px;border-radius:999px;font-weight:850;font-size:.82rem;white-space:nowrap}
+    .jump a:first-child{background:var(--green);color:white}
+    @media(min-width:700px){.grid{grid-template-columns:1fr 1fr}.route:before{left:31px}.day{grid-template-columns:64px minmax(0,1fr)}.marker{width:64px;height:64px}.day-main{padding:25px}.top{padding-left:28px;padding-right:28px}.wrap{padding-left:28px;padding-right:28px}.fields{grid-template-columns:1fr 1fr}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    @media print{.jump,.actions,.install{display:none}.top{background:white;color:var(--ink);padding:20px 0}.summary{color:var(--ink)}.wrap{padding:0}.day-card,.panel{box-shadow:none;border:1px solid var(--line)}body{background:white}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <h1>Southbound, together.</h1>
+      <div class="tripline"><span>3 days</span><i></i>Minneapolis<i></i>Nashville</div>
+      <p class="summary">Wendell’s phone-ready guide for a steady three-day move with a trailer and cats. Routes, hotel stops, and the essentials—kept available offline.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="offline" role="status">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5a7 7 0 0 1 11.8-5.1M19 11a7 7 0 0 1-11.8 5.6M8 4v4h4M16 20v-4h-4" stroke="#173f35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><strong id="status">Offline guide ready</strong><small>Checklists and contact notes are saved only on this phone.</small></div>
+    </div>
+
+    <section id="route" aria-labelledby="route-title">
+      <h2 id="route-title">The route</h2>
+      <p class="section-note">Times are conservative planning estimates for towing, including ordinary fuel and rest breaks—not live traffic.</p>
+      <div class="route">
+        <article class="day">
+          <div class="marker" aria-hidden="true">1</div>
+          <div class="day-card">
+            <div class="day-main">
+              <p class="day-label">Thursday · Oct 29</p>
+              <h3>Minneapolis → Verona</h3>
+              <p class="measure">≈ 270 miles · allow 5½–6 hours</p>
+              <address><strong>Holiday Inn Express &amp; Suites Madison–Verona</strong><br>515 W Verona Ave<br>Verona, WI 53593</address>
+              <p class="note">Easy first day: settle the cats, check trailer connections after the first stop, and arrive with daylight if possible.</p>
+            </div>
+            <div class="actions">
+              <a href="https://www.google.com/maps/dir/?api=1&amp;origin=Minneapolis%2C+MN&amp;destination=515+W+Verona+Ave%2C+Verona%2C+WI+53593&amp;travelmode=driving" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18 3 20V6l6-2 6 2 6-2v14l-6 2-6-2Z" stroke="currentColor" stroke-width="2"/><path d="M9 4v14m6-12v14" stroke="currentColor" stroke-width="2"/></svg>Google</a>
+              <a href="https://maps.apple.com/?saddr=Minneapolis%2C+MN&amp;daddr=515+W+Verona+Ave%2C+Verona%2C+WI+53593&amp;dirflg=d" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6 7-12A7 7 0 1 0 5 9c0 6 7 12 7 12Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9" r="2" fill="currentColor"/></svg>Apple</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="day">
+          <div class="marker" aria-hidden="true">2</div>
+          <div class="day-card">
+            <div class="day-main">
+              <p class="day-label">Friday · Oct 30</p>
+              <h3>Verona → Paducah</h3>
+              <p class="measure">≈ 475 miles · allow 8–9 hours</p>
+              <address><strong>Candlewood Suites Paducah</strong><br>3940 Coleman Crossing Cir<br>Paducah, KY 42001</address>
+              <p class="note">Longest leg. Start fueled, rotate cat checks with human breaks, and call ahead to confirm overnight trailer placement.</p>
+            </div>
+            <div class="actions">
+              <a href="https://www.google.com/maps/dir/?api=1&amp;origin=515+W+Verona+Ave%2C+Verona%2C+WI+53593&amp;destination=3940+Coleman+Crossing+Cir%2C+Paducah%2C+KY+42001&amp;travelmode=driving" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18 3 20V6l6-2 6 2 6-2v14l-6 2-6-2Z" stroke="currentColor" stroke-width="2"/><path d="M9 4v14m6-12v14" stroke="currentColor" stroke-width="2"/></svg>Google</a>
+              <a href="https://maps.apple.com/?saddr=515+W+Verona+Ave%2C+Verona%2C+WI+53593&amp;daddr=3940+Coleman+Crossing+Cir%2C+Paducah%2C+KY+42001&amp;dirflg=d" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6 7-12A7 7 0 1 0 5 9c0 6 7 12 7 12Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9" r="2" fill="currentColor"/></svg>Apple</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="day">
+          <div class="marker" aria-hidden="true">3</div>
+          <div class="day-card">
+            <div class="day-main">
+              <p class="day-label">Saturday · Oct 31</p>
+              <h3>Paducah → Nashville</h3>
+              <p class="measure">≈ 150 miles · allow 3–3½ hours</p>
+              <address><strong>Destination</strong><br>Nashville, Tennessee</address>
+              <p class="note">Short finish. Confirm the exact arrival address and unloading access before leaving Paducah.</p>
+            </div>
+            <div class="actions">
+              <a href="https://www.google.com/maps/dir/?api=1&amp;origin=3940+Coleman+Crossing+Cir%2C+Paducah%2C+KY+42001&amp;destination=Nashville%2C+TN&amp;travelmode=driving" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18 3 20V6l6-2 6 2 6-2v14l-6 2-6-2Z" stroke="currentColor" stroke-width="2"/><path d="M9 4v14m6-12v14" stroke="currentColor" stroke-width="2"/></svg>Google</a>
+              <a href="https://maps.apple.com/?saddr=3940+Coleman+Crossing+Cir%2C+Paducah%2C+KY+42001&amp;daddr=Nashville%2C+TN&amp;dirflg=d" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-6 7-12A7 7 0 1 0 5 9c0 6 7 12 7 12Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9" r="2" fill="currentColor"/></svg>Apple</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <aside class="tow" aria-labelledby="tow-title">
+      <h2 id="tow-title">Route apps don’t know you’re towing.</h2>
+      <p>Google Maps and Apple Maps have no passenger-car trailer mode. <strong>Road signs and posted restrictions always win.</strong> Avoid tight lots, low clearances, sudden reroutes, and any road that looks unsuitable. Pull over safely before changing navigation.</p>
+    </aside>
+
+    <section id="checklists" aria-labelledby="check-title">
+      <h2 id="check-title">Road checks</h2>
+      <p class="section-note">Tap as you go. Progress remains on this device—even offline.</p>
+      <div class="grid">
+        <div class="panel">
+          <h3>Before departure</h3>
+          <ul class="checklist">
+            <li><label><input type="checkbox" data-check="hitch"><span>Hitch locked; safety chains crossed</span></label></li>
+            <li><label><input type="checkbox" data-check="lights"><span>Trailer lights and turn signals working</span></label></li>
+            <li><label><input type="checkbox" data-check="tires"><span>Tire pressure and lug nuts checked</span></label></li>
+            <li><label><input type="checkbox" data-check="cargo"><span>Cargo balanced and secured</span></label></li>
+            <li><label><input type="checkbox" data-check="cats"><span>Cats secured; carriers labeled</span></label></li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Fuel &amp; rest stop</h3>
+          <ul class="checklist">
+            <li><label><input type="checkbox" data-check="fuel"><span>Fuel before the gauge drops below ¼</span></label></li>
+            <li><label><input type="checkbox" data-check="walk"><span>Stretch, hydrate, and switch drivers if needed</span></label></li>
+            <li><label><input type="checkbox" data-check="walkaround"><span>Walk around trailer; feel hubs cautiously</span></label></li>
+            <li><label><input type="checkbox" data-check="catcheck"><span>Check cats, water, temperature, and bedding</span></label></li>
+            <li><label><input type="checkbox" data-check="route"><span>Review next stop before moving</span></label></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="help" aria-labelledby="help-title">
+      <h2 id="help-title">If something goes wrong</h2>
+      <p class="section-note">Save essential numbers and policy details here before departure. They stay in this browser on this phone.</p>
+      <div class="grid">
+        <div class="panel danger">
+          <h3>Immediate danger</h3>
+          <p>Pull fully off the roadway if possible, turn on hazards, and keep people and cats away from traffic.</p>
+          <a class="call" href="tel:911">Call 911</a>
+          <p><small>911 is for emergencies in the United States. For non-emergencies, use the local agency’s published number.</small></p>
+        </div>
+        <div class="panel">
+          <h3>Offline details</h3>
+          <div class="fields">
+            <label>Emergency contact<input data-note="contact" autocomplete="tel" placeholder="Name and phone"></label>
+            <label>Roadside assistance<input data-note="roadside" autocomplete="tel" placeholder="Provider and phone"></label>
+            <label>Insurance policy<input data-note="policy" placeholder="Company / policy number"></label>
+            <label>Final Nashville address<input data-note="destination" autocomplete="street-address" placeholder="Add before Day 3"></label>
+          </div>
+          <p class="saved" id="saved" aria-live="polite"></p>
+          <div class="install"><strong>Keep it offline:</strong> while online, open the published page once. On iPhone use Share → Add to Home Screen. On Android use the browser menu → Install app. Also save the HTML file in Files as a backup.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="jump" aria-label="Page sections"><a href="#route">Route</a><a href="#checklists">Checks</a><a href="#help">Help</a></nav>
+  <footer>Drive conservatively. Stop when tired. This guide is a planning aid, not live traffic, weather, road-condition, or clearance information.</footer>
+  <script>
+    (() => {
+      const key = 'southbound-trip-v1';
+      let data = { checks: {}, notes: {} };
+      try { data = JSON.parse(localStorage.getItem(key)) || data; } catch (_) {}
+      const save = () => { try { localStorage.setItem(key, JSON.stringify(data)); } catch (_) {} };
+      document.querySelectorAll('[data-check]').forEach(el => {
+        el.checked = !!data.checks[el.dataset.check];
+        el.addEventListener('change', () => { data.checks[el.dataset.check] = el.checked; save(); });
+      });
+      let timer;
+      document.querySelectorAll('[data-note]').forEach(el => {
+        el.value = data.notes[el.dataset.note] || '';
+        el.addEventListener('input', () => {
+          data.notes[el.dataset.note] = el.value; save();
+          clearTimeout(timer); document.querySelector('#saved').textContent = 'Saved on this device.';
+          timer = setTimeout(() => document.querySelector('#saved').textContent = '', 1800);
+        });
+      });
+      const status = document.querySelector('#status');
+      const showNetwork = () => status.textContent = navigator.onLine ? 'Offline guide ready' : 'You’re offline — the guide still works';
+      addEventListener('online', showNetwork); addEventListener('offline', showNetwork); showNetwork();
+      if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(() => {});
+    })();
+  </script>
+</body>
+</html>
